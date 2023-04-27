@@ -42,25 +42,28 @@ class ProductManager {
     };
 
     async updateProduct(id, product){
-        try {let prods = await this.getProducts();
-            let prod = prods.find((x)=> x.id == id);
-                if (prod == undefined){
+        try {let prods       = await this.getProducts();
+             let prod        = prods.find((x)=> x.id === id);
+             let prodsFilter = prods.filter((x) => x.id != id);
+             
+                if (!prod){
                     return {Error: 'Producto no encontrado'};
-                } else { 
+                } else {
+                   
                     const {code, title, description, price, thumbnail, stock} = product;
-                    prod.code           = code;
-                    prod.title          = title;
-                    prod.description    = description;
-                    prod.price          = price;
-                    prod.thumbnail      = thumbnail;
-                    prod.stock          = stock;
+                    (code)          ? prod.code         = code            : null;
+                    (title)         ? prod.title        = title           : null;
+                    (description)   ? prod.description  = description     : null;
+                    (price)         ? prod.price        = price           : null;
+                    (thumbnail)     ? prod.thumbnail    = thumbnail       : null;
+                    (stock)         ? prod.stock        = stock           : null;
 
-                    await this.deleteById(id);
-                    await this.addProduct({...prod, id:id})
-
-
+                    const objetoActualizado = {...prod,id: id};
+                    prodsFilter.push(objetoActualizado);
+                    await fs.writeFile(this.fPath, JSON.stringify(prodsFilter));
+                    
                     return { UPDATE : `producto id: ${id} actualizado correctamente` }}
-                
+
                 } catch(error) {  console.log(error)  }
     };
 
@@ -92,9 +95,9 @@ async function ejecutar(){
         let producto1 = {code:"PROD01", title: "Product 1", description:"Prod 1 description", price: 1999.9, thumbnail: "Prod1_img_url.png", stock: 10};
         let producto2 = {code:"PROD02", title: "Producto 2", description:"Prod 2 description",price: 1800, thumbnail: "url del segundo producto", stock: 10}
         
-        let producto3 = {code:"PROD00", title: "Producto upd", description:"Prod UPD description",price: 800, thumbnail: "url del prod actualizado", stock: 210}
-        // await archivo.addProduct(producto1);
-        // await archivo.addProduct(producto2);
+        let producto3 = {code:"PROD00",  description:"Prod UPD description",price: 800, thumbnail: "url del prod actualizado", stock: 210}
+         //await archivo.addProduct(producto1);
+         //await archivo.addProduct(producto2);
 
         //get by id    
 
@@ -104,8 +107,8 @@ async function ejecutar(){
             //console.log(await archivo.getProducts());
 
         //upd 
-       //console.log(await archivo.updateProduct(2,producto3));    
-       console.log(await archivo.getProductById(2));
+       console.log(await archivo.updateProduct(1,producto3));    
+       //console.log(await archivo.getProductById(2));
 
         //delete by id 
            //await archivo.deleteById(3);    
