@@ -4,7 +4,7 @@ import CartController from '../controllers/CartController.js';
 const cartRouter = Router();
 const cartController = new CartController();
 
-cartRouter.get('/', async(req, res) => {
+cartRouter.post('/', async(req, res) => {
     try{const  createCart = await cartController.createCart();
         console.log(createCart)
         //res.send(createCart)
@@ -13,6 +13,20 @@ cartRouter.get('/', async(req, res) => {
     };
 } );
 
+
+cartRouter.post('/:cid/product/:pid', async(req,res) => {
+    try{
+        const { cid, pid } = req.params;
+        
+        const  addProductToCart = await cartController.addProductToCart(cid, pid);
+        
+        console.log('Adding prod to cart: ', addProductToCart)
+        //res.send(createCart)
+        } catch(error) {
+            res.send('Working NO OK: ', error)
+    };
+
+} )
 
 cartRouter.get('/', async(req, res) => {
     try {const   products = await prodController.getProducts();
