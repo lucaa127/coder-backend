@@ -27,9 +27,13 @@ productRouter.get ('/:id', async(req,res)=> {
 });
 
 productRouter.post('/', async(req,res)=> {
-    const data = req.body;
-    await prodController.addProduct(data);
-    //res.redirect('/');
+   try {const data = req.body;
+        await prodController.addProduct(data);
+        const products = await prodController.getProducts();
+        res.status(201).send(products);
+        } catch (error) {
+        res.status(500).send({err: error});
+   } 
 
 })
 

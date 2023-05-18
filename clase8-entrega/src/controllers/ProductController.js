@@ -19,7 +19,6 @@ export default class ProductController {
               }
         };
 
-
         async getProductById(id){
             try {let obj = await this.getProducts();
                  obj = obj.find(x => x.id == id)
@@ -40,9 +39,26 @@ export default class ProductController {
                             let maxID = Math.max(...valorIds)
                             newId = maxID + 1;
                         };
-                    const objetoNuevo = {...prod,id: newId};
-                    objetos.push(objetoNuevo);
-                    await fs.promises.writeFile(this.fPath, JSON.stringify(objetos));
+
+                        const msgRequiredProps = []
+                        const {code, title, description, status, price, thumbnails, category, stock} = prod;
+                        (!code)          ? msgRequiredProps.push('code')            : null;
+                        (!title)         ? msgRequiredProps.push('title')           : null;
+                        (!description)   ? msgRequiredProps.push('description')     : null;
+                        (!status)        ? msgRequiredProps.push('status')          : null;
+                        (!price)         ? msgRequiredProps.push('price')           : null;
+                        (!thumbnails)    ? prod.thumbnails   = []                   : null;
+                        (!category)      ? msgRequiredProps.push('category')        : null;
+                        (!stock)         ? msgRequiredProps.push('stock')           : null;
+
+                        if (msgRequiredProps.length > 0){
+                            return {Error: `Las siguientes propiedades son obligatorias: ${msgRequiredProps}`}
+                        } else {
+                            const objetoNuevo = {...prod,id: newId};
+                            objetos.push(objetoNuevo);
+                            await fs.promises.writeFile(this.fPath, JSON.stringify(objetos));
+                        }
+
                 } catch(error) {
                     console.log('Error al guardar');
                     }
@@ -57,12 +73,14 @@ export default class ProductController {
                             return {Error: 'Producto no encontrado'};
                         } else {
                            
-                            const {code, title, description, price, thumbnail, stock} = product;
+                            const {code, title, description, status, price, thumbnails, category, stock} = product;
                             (code)          ? prod.code         = code            : null;
                             (title)         ? prod.title        = title           : null;
                             (description)   ? prod.description  = description     : null;
+                            (status)        ? prod.status       = status          : null;
                             (price)         ? prod.price        = price           : null;
-                            (thumbnail)     ? prod.thumbnail    = thumbnail       : null;
+                            (thumbnails)    ? prod.thumbnails   = thumbnails      : null;
+                            (category)      ? prod.category     = category        : null;
                             (stock)         ? prod.stock        = stock           : null;
         
                             const objetoActualizado = {...prod,id: id};
@@ -81,12 +99,12 @@ export default class ProductController {
                         if (objToDelete !== -1){
                            objetos = objetos.filter(x => x.id !== id);
                            await fs.promises.writeFile(this.fPath,JSON.stringify(objetos));
-                           console.log (`El producto id:${id}, fue eliminado.`)
+                           return (`El producto id:${id}, fue eliminado.`)
                     } else {
-                           console.log (`El producto id:${id}, no existe.`)
+                           return (`El producto id:${id}, no existe.`)
                     }
                 } catch(error) {
-                    console.log ('Error al eliminar por ID')
+                    return ('Error al eliminar por ID')
                 }
             };
 
