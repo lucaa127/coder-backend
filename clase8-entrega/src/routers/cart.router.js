@@ -20,24 +20,27 @@ cartRouter.post('/:cid/product/:pid', async(req,res) => {
         
         const  addProductToCart = await cartController.addProductToCart(cid, pid);
         
-        console.log('Adding prod to cart: ', addProductToCart)
+        res.status(201).send(addProductToCart)
         //res.send(createCart)
         } catch(error) {
-            res.send('Working NO OK: ', error)
+            res.send('Error al agregar productos al carrito: ', error)
     };
 
 } )
 
-cartRouter.get('/', async(req, res) => {
-    try {const   products = await prodController.getProducts();
-        let   limit = parseInt(req.query.limit);
+cartRouter.get('/:cid', async(req, res) => {
+    try {const {cid} = req.params;
+         const   products = await cartController.getCartProducts(cid);
+         res.status(201).send(products)
+
+        //let   limit = parseInt(req.query.limit);
         
-        if (!limit || (isNaN(limit))) {
-            res.send(products); 
-         } else {
-            //let products = await archivo.getProducts();
-            res.send(products.slice(0,limit));
-        }
+        // if (!limit || (isNaN(limit))) {
+        //     res.send(products); 
+        //  } else {
+        //     //let products = await archivo.getProducts();
+        //     res.send(products.slice(0,limit));
+        // }
     } catch (error) {
         console.log(error)
         res.send(error);
