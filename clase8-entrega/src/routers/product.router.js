@@ -11,7 +11,6 @@ productRouter.get('/', async(req, res) => {
         if (!limit || (isNaN(limit))) {
             res.send(products); 
          } else {
-            //let products = await archivo.getProducts();
             res.send(products.slice(0,limit));
         }
     } catch (error) {
@@ -28,9 +27,8 @@ productRouter.get ('/:id', async(req,res)=> {
 
 productRouter.post('/', async(req,res)=> {
    try {const data = req.body;
-        await prodController.addProduct(data);
-        const products = await prodController.getProducts();
-        res.status(201).send(products);
+        const addProduct = await prodController.addProduct(data);
+        res.status(201).send(addProduct);
         } catch (error) {
         res.status(500).send({err: error});
    } 

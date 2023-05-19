@@ -40,21 +40,22 @@ export default class ProductController {
                             newId = maxID + 1;
                         };
 
-                        const msgRequiredProps = []
+                        const msgRequiredProps   = [];
+                        const cleanProduct    = {code:"", title:"", description:"", status:"", price:0, thumbnails:[], category:"", stock:0};
                         const {code, title, description, status, price, thumbnails, category, stock} = prod;
-                        (!code)          ? msgRequiredProps.push('code')            : null;
-                        (!title)         ? msgRequiredProps.push('title')           : null;
-                        (!description)   ? msgRequiredProps.push('description')     : null;
-                        (!status)        ? msgRequiredProps.push('status')          : null;
-                        (!price)         ? msgRequiredProps.push('price')           : null;
-                        (!thumbnails)    ? prod.thumbnails   = []                   : null;
-                        (!category)      ? msgRequiredProps.push('category')        : null;
-                        (!stock)         ? msgRequiredProps.push('stock')           : null;
+                        (!code)          ? msgRequiredProps.push('code')            : cleanProduct.code         = code;
+                        (!title)         ? msgRequiredProps.push('title')           : cleanProduct.title        = title;
+                        (!description)   ? msgRequiredProps.push('description')     : cleanProduct.description  = description;
+                        (!status)        ? msgRequiredProps.push('status')          : cleanProduct.status       = true;
+                        (!price)         ? msgRequiredProps.push('price')           : cleanProduct.price        = price;
+                        (!category)      ? msgRequiredProps.push('category')        : cleanProduct.category     = category;
+                        (!stock)         ? msgRequiredProps.push('stock')           : cleanProduct.stock        = stock;
+                        (!thumbnails)    ? cleanProduct.thumbnails = []             : cleanProduct.thumbnails.push(...thumbnails);
 
                         if (msgRequiredProps.length > 0){
                             return {Error: `Las siguientes propiedades son obligatorias: ${msgRequiredProps}`}
                         } else {
-                            const objetoNuevo = {...prod,id: newId};
+                            const objetoNuevo = {...cleanProduct,id: newId};
                             objetos.push(objetoNuevo);
                             await fs.promises.writeFile(this.fPath, JSON.stringify(objetos));
                         }
