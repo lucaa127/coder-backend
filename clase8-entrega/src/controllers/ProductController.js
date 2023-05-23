@@ -58,6 +58,7 @@ export default class ProductController {
                             const objetoNuevo = {...cleanProduct,id: newId};
                             objetos.push(objetoNuevo);
                             await fs.promises.writeFile(this.fPath, JSON.stringify(objetos));
+                            return { INSERT : `producto id: ${newId} agregado correctamente` }
                         }
 
                 } catch(error) {
@@ -67,9 +68,8 @@ export default class ProductController {
 
             async updateProduct(id, product){
                 try {let prods       = await this.getProducts();
-                     let prod        = prods.find((x)=> x.id === id);
+                     let prod        = prods.find((x)=> x.id == id);
                      let prodsFilter = prods.filter((x) => x.id != id);
-                     console.log(prods)
                         if (!prod){
                             return {Error: 'Producto no encontrado'};
                         } else {
@@ -98,7 +98,7 @@ export default class ProductController {
                     let objetos = await this.getProducts();
                     const objToDelete = objetos.findIndex(x => x.id == id);
                         if (objToDelete !== -1){
-                           objetos = objetos.filter(x => x.id !== id);
+                           objetos = objetos.filter(x => x.id != id);
                            await fs.promises.writeFile(this.fPath,JSON.stringify(objetos));
                            return (`El producto id:${id}, fue eliminado.`)
                     } else {

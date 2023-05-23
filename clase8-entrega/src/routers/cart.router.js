@@ -7,12 +7,10 @@ const cartController = new CartController();
 cartRouter.post('/', async(req, res) => {
     try{const  createCart = await cartController.createCart();
         console.log(createCart)
-        //res.send(createCart)
         } catch(error) {
             res.send('Working NO OK: ', error)
     };
 } );
-
 
 cartRouter.post('/:cid/product/:pid', async(req,res) => {
     try{const { cid, pid } = req.params;
